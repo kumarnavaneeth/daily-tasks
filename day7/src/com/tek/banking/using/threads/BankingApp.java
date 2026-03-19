@@ -14,7 +14,7 @@ public class BankingApp {
 		ExecutorService executor = Executors.newFixedThreadPool(3);
 		while (true) {
 
-			System.out.println("\n===== MULTITHREADED BANKING SYSTEM (ExecutorService) =====");
+			System.out.println("\nMULTITHREADED BANKING SYSTEM (ExecutorService");
 			System.out.println("1. Check Balance");
 			System.out.println("2. Deposit Money");
 			System.out.println("3. Withdraw Money");

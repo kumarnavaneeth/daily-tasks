@@ -44,7 +44,7 @@ public void reserveBook(String title) throws BookNotAvailableException {
 	if(title.isEmpty()) {
 		throw new IllegalArgumentException("it cannnot be empty");
 	}
-	if(title.equals(" ")) {
+	if(title.trim().isEmpty()) {
 		throw new IllegalArgumentException("title cannot have spaces");
 	}
 	for(Book b:book) {
