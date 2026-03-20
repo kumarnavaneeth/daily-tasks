@@ -16,7 +16,6 @@ INDEX VERSION 1.134+C:\Users\Administrator\Downloads\spring-tools\sts-5.0.1.RELE
 2022349728.index
 1860047368.index
 181859645.index
-2161144612.index
 433660574.index
 276845552.index
 1865797976.index
