@@ -9,27 +9,25 @@ public class LibraryList {
 	List<Book> book = new ArrayList<>();
 
 	public void add(int bookid, String title, float price) {
-		book.add(new Book(bookid, title, price));
-//	System.out.println("book added");
+		if (!validateStringValues(title) || !validatePriceValue(price) || !validateIdValue(bookid)) {
+			throw new IllegalArgumentException("invalid input");
+		}
+		book.add(new Book(bookid,title,price));
 		logger.info("Book added succesfully");
 	}
 
 	public void removeBook(String title) {
-		if(!validateStringValues(title)) {
+		if (!validateStringValues(title)) {
 			throw new IllegalArgumentException("invalid input");
 		}
 		for (int i = 0; i < book.size(); i++) {
 			if (book.get(i).title.equals(title)) {
 				book.remove(i);
-//		 System.out.println("book removed successfully");
-				logger.info("book removed successfully");
+				logger.info("book removed successfully");// instaed of print we use loggers
 				return;
 			}
 		}
-		if (book.size() == 0) {
-			// System.out.println("book not found");
-			logger.info("book not fund");
-		}
+		throw new BookNotAvailableException("entered book is not found in the library");
 	}
 
 	public void displayBook() {
@@ -39,10 +37,7 @@ public class LibraryList {
 			logger.info("no book available");
 		}
 		for (Book b : book) {
-			System.out.println("Book id" + b.Bookid);
-			System.out.println("title" + b.title);
-			System.out.println("price" + b.price);
-			System.out.println("status" + b.status);
+			System.out.println(b);
 		}
 	}
 

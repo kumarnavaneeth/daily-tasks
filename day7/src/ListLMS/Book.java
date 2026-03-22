@@ -18,4 +18,8 @@ public BookStatus getStatus() {
 	// TODO Auto-generated method stub
 	return status;
 }
+@Override
+public String  toString() {
+	return "book id: " +Bookid+ "title: " +title+ "price: " +price + "status: " +status;
+}
 }
