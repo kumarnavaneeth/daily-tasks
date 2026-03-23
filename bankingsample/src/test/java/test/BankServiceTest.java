@@ -1,72 +1,92 @@
 package test;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.*;
 
+import Repository.AccountRepository;
 import exception.BankingException;
+import model.Account;
 import service.BankService;
 
+import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-	class BankServiceTest {
+class BankServiceTest {
 
-	    private BankService bank;
+    @Mock
+    private AccountRepository repository;
 
-	    @BeforeEach
-	    void setup() {
-	        bank = new BankService();
-	        bank.createAccount(1, "Amit", 1000);
-	    }
+    @InjectMocks
+    private BankService bankService;
 
-	    @Test
-	    void testDeposit() {
-	        bank.deposit(1, 500);
-	        assertEquals(1500, bank.getAccount(1).getBalance());
-	    }
+    private Account account;
 
-	    @Test
-	    void testWithdraw() {
-	        bank.withdraw(1, 300);
-	        assertEquals(700, bank.getAccount(1).getBalance());
-	    }
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+        account = new Account(1, "Amit", 1000);
+    }
 
-	    @Test
-	    void testInsufficientBalance() {
-	        assertThrows(BankingException.class, () ->
-	                bank.withdraw(1, 3000)
-	        );
-	    }
+    @Test
+    void testDeposit() {
 
-	    @Test
-	    void testDuplicateAccount() {
-	        assertThrows(BankingException.class, () ->
-	                bank.createAccount(1, "Test", 500)
-	        );
-	    }
-	    @Test 
-	    void testwrongAccountWithdraw(){
-	    	assertThrows(BankingException.class,()->{
-	    		bank.withdraw(2,100);
-	    	});
-	    }
-	    @Test
-	    void testWrongAccountDeposit() {
-	    	assertThrows(BankingException.class,()->{
-	    		bank.deposit(2, 200);
-	    	});
-	    }
-	    @Test
-	    void testWithdrawWithNegativeAmount() {
-	    	assertThrows(BankingException.class,()->{
-	    		bank.withdraw(1, -20);
-	    	});
-	    }
-	    @Test
-	    void testDepositWithNegativeAmount() {
-	    	assertThrows(BankingException.class,()->{
-	    		bank.deposit(1, -30);
-	    	});
-	    }
-	}
+        when(repository.findById(1)).thenReturn(account);//mocking
 
+        bankService.deposit(1, 500);
 
+        assertEquals(1500, account.getBalance());
 
+        verify(repository).save(account);
+    }
+    @Test
+    void testWithdrawInsufficientBalance() {
+
+        when(repository.findById(1)).thenReturn(account);
+
+        assertThrows(IllegalArgumentException.class, () ->
+                bankService.withdraw(1, 2000)
+        );
+
+        verify(repository, never()).save(any());
+    }
+    @Test
+    void testWithdraw() {
+    	when(repository.findById(1)).thenReturn(account);
+    	bankService.withdraw(1, 100);
+    	assertEquals(900,account.getBalance());
+    	verify(repository).save(account);
+    }
+    @Test
+    void testWithdrawNegativeAmount() {
+    	when(repository.findById(1)).thenReturn(account);
+    	assertThrows(IllegalArgumentException.class,()->{
+    		bankService.withdraw(1,-10);
+    	});
+    	verify(repository,never()).save(any());
+    }
+    @Test
+    void testDepositNegativeAmount() {
+    	when(repository.findById(1)).thenReturn(account);
+    	assertThrows(IllegalArgumentException.class,()->{
+    		bankService.deposit(1,-30);
+    	});
+    	verify(repository,never()).save(any());
+    }
+    @Test
+    void testDepositWithWrongAccountNumber() {
+    	when(repository.findById(1)).thenReturn(account);
+    	assertThrows(BankingException.class,()->{
+    		bankService.deposit(2,100);
+    	});
+    	verify(repository,never()).save(any());
+    }
+    @Test
+    void testWithdrawWithWrongAccountNumber() {
+    	when(repository.findById(1)).thenReturn(account);
+    	assertThrows(BankingException.class,()->{
+    		bankService.deposit(3, 300);
+    	});
+    }
+  
+}

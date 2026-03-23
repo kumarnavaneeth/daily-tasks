@@ -1,0 +1,4 @@
+INFO:start
+ERROR:db failed
+WARNING:low memory
+ERROR: disk failed

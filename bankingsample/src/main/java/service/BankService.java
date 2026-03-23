@@ -1,34 +1,29 @@
 package service;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import Repository.AccountRepository;
 import exception.BankingException;
 import model.Account;
 
 public class BankService {
-	private Map<Integer, Account> accounts = new HashMap<>();
 
-	public void createAccount(int accNo, String name, double balance) {
-		if (accounts.containsKey(accNo)) {
-			throw new BankingException("account already exsists");
-		}
-		accounts.put(accNo, new Account(accNo, name, balance));
-	}
+    private final AccountRepository repository;
 
-	public Account getAccount(int accNo) {
-		Account acc = accounts.get(accNo);
-		if (acc == null) {
-			throw new BankingException("account not found");
-		}
-		return acc;
-	}
+    public BankService(AccountRepository repository) {
+        this.repository = repository;
+    }
+    public void deposit(int accountNumber, double amount) {
+        Account account = repository.findById(accountNumber);
+        if(account==null) {
+        	throw new BankingException("Account not found");
+        }
+        account.deposit(amount);
+        repository.save(account);
+    }
 
-	public void deposit(int accNo, double amount) {
-		getAccount(accNo).deposit(amount);
-	}
+    public void withdraw(int accountNumber, double amount) {
+        Account account = repository.findById(accountNumber);
+        account.withdraw(amount);
+        repository.save(account);
+    }
 
-	public void withdraw(int accNo, double amount) {
-		getAccount(accNo).withdraw(amount);
-	}
 }
