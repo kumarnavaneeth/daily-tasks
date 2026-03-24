@@ -13,6 +13,8 @@ public static void main(String[] args) throws IOException {
 	String line;
 	while((line=reader.readLine())!=null){
 		map.put(Integer, line);
+		System.out.println();
+		System.out.println();
 	}
 }
 }
