@@ -21,7 +21,7 @@ public class NotesController {
 	NotesService notesService;
 
 	@GetMapping
-	Note GetNotes() {
+	Iterable<Note> GetNotes() {
 		return notesService.GetNotes();
 	}
 
