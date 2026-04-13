@@ -37,7 +37,7 @@ public void setStatus(Status status) {
 }
 public enum Status{
 	CREATED,
-	ClOSED
+	CLOSED
 }
 public int getPriority() {
 	return priority;

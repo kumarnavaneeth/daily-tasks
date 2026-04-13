@@ -13,7 +13,7 @@ public class NotesService {
 	public Iterable<Note> GetNotes() {
 		return notesRepository.findAll();
 	}
-	public void createNote(Note note) {
-	notesRepository.save(note);
+	public Note createNote(Note note) {
+	 return notesRepository.save(note);
 	}
 }
