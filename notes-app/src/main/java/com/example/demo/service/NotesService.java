@@ -11,6 +11,11 @@ public class NotesService {
 	@Autowired
 	NotesRepository notesRepository;
 	public Iterable<Note> GetNotes() {
+		try {
+			Thread.sleep(1040);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		return notesRepository.findAll();
 	}
 	public Note createNote(Note note) {
