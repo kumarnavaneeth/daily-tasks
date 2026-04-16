@@ -14,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.persistence.GenerationType;
 @Entity
 @Table(name="Orders")
@@ -22,6 +23,14 @@ public class Order {
 @GeneratedValue(strategy = GenerationType.IDENTITY)
 private Long id;
 private LocalDateTime createdAt;
+@NotBlank
+private String address;
+public String getAddress() {
+	return address;
+}
+public void setAddress(String address) {
+	this.address = address;
+}
 @Enumerated(EnumType.STRING)
 private Status status;
 public Status getStatus() {

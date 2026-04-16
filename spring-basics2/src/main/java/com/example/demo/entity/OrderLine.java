@@ -7,14 +7,26 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.persistence.GenerationType;
 @Entity
 public class OrderLine {
 @Id
 @GeneratedValue(strategy =GenerationType.IDENTITY)
 private Long id;
+@NotBlank
 private String item;
+@Min(value = 1)
 private double price;
+@Min(1)
+private int quantity;
+public int getQuantity() {
+	return quantity;
+}
+public void setQuantity(int quantity) {
+	this.quantity = quantity;
+}
 public String getItem() {
 	return item;
 }

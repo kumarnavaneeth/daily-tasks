@@ -49,7 +49,13 @@ public class NoteService {
 		order.setStatus(Order.Status.CREATED);
 		for (OrderLine line : order.getOrderLines()) {
 			if (line.getItem() == null || line.getItem().trim().isEmpty()) {
-				throw new IllegalArgumentException("Item name cannot be null or empty");
+				throw new IllegalArgumentException("Item name is missing");
+			}
+			if (line.getPrice() <=0) {
+				throw new IllegalArgumentException("Price cannot be negative");
+			}
+			if(line.getQuantity()<=0) {
+				throw new IllegalArgumentException("quanity cannot be negative");
 			}
 			line.setOrder(order);
 		}

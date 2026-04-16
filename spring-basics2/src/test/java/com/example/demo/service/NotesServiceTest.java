@@ -21,16 +21,19 @@ class NotesServiceTest {
 	NoteService notesService;
 	@Mock
 	Order1Repository order1Repository;
+
 	@BeforeEach
 	void setup() {
 		MockitoAnnotations.openMocks(this);
 	}
+
 	@Test
 	void TestSuccessfulAddOrder() {
 		Order order=new Order();
 	    OrderLine orderLine = new OrderLine();
 	    orderLine.setItem("Laptop");
 	    orderLine.setPrice(50000);
+	    orderLine.setQuantity(2);
 	    List<OrderLine> lines=new ArrayList<>();
 	    lines.add(orderLine);
 	    order.setOrderLines(lines);
@@ -41,32 +44,58 @@ class NotesServiceTest {
 	    assertEquals(result,1L );
 	}	
 	@Test
-	void testAddOrderStatusCreated() {
-	    Order order = new Order();
-	    OrderLine line = new OrderLine();
-	    line.setItem("Laptop");
-	    line.setPrice(50000);
-	    List<OrderLine> lines = new ArrayList<>();
-	    lines.add(line);
-	    order.setOrderLines(lines);
-	    when(order1Repository.save(any(Order.class))).thenReturn(order);
-	    notesService.addOrder(order);
-	    assertEquals(Order.Status.CREATED, order.getStatus());
+	void testAddOrderWithMissingItem() {
+		Order order = new Order();
+		OrderLine orderLine = new OrderLine();
+		orderLine.setPrice(100);
+		orderLine.setQuantity(3);
+		orderLine.setItem("");
+		List<OrderLine> lines = new ArrayList<>();
+		lines.add(orderLine);
+		order.setOrderLines(lines);
+		assertThrows(IllegalArgumentException.class, () -> {
+			notesService.addOrder(order);
+		});
+		verify(order1Repository, never()).save(any(Order.class));
 	}
 	@Test
-	void testEmptyOrderLines() {
-	    Order order = new Order();
-	    order.setOrderLines(new ArrayList<>());
-	    when(order1Repository.save(any(Order.class))).thenReturn(order);
-	    assertThrows(IllegalArgumentException.class,
-	            () -> notesService.addOrder(order));
+	void testaddOrderWithNegativePrice() {
+		Order order=new Order();
+		OrderLine orderLine=new OrderLine();
+		orderLine.setItem("box");
+		orderLine.setPrice(-2);
+		orderLine.setQuantity(2);
+		List<OrderLine> lines=new ArrayList<>();
+		lines.add(orderLine);
+		order.setOrderLines(lines);
+		assertThrows(IllegalArgumentException.class,()->{
+			notesService.addOrder(order);
+		});
+		verify(order1Repository, never()).save(any(Order.class));
 	}
 	@Test
-	void testNUllOrderLines() {
-	    Order order = new Order();
-	    order.setOrderLines(null);
-	    when(order1Repository.save(any(Order.class))).thenReturn(order);
-	    assertThrows(IllegalArgumentException.class,
-	            () -> notesService.addOrder(order));
+	void testaddOrderWithNoQuantity() {
+		Order order=new Order();
+		OrderLine orderLine=new OrderLine();
+		orderLine.setItem("box");
+		orderLine.setPrice(-2);
+		orderLine.setQuantity(2);
+		List<OrderLine> lines=new ArrayList<>();
+		lines.add(orderLine);
+		order.setOrderLines(lines);
+		assertThrows(IllegalArgumentException.class,()->{
+			notesService.addOrder(order);
+		});
+		verify(order1Repository, never()).save(any(Order.class));
+	}
+	@Test
+	void testADDOrderWithZeroOrderLines() {
+		Order order=new Order();
+		List<OrderLine> lines=new ArrayList<>();
+		order.setOrderLines(lines);
+		assertThrows(IllegalArgumentException.class,()->{
+			notesService.addOrder(order);
+		});
+		verify(order1Repository, never()).save(any(Order.class));
 	}
 }
