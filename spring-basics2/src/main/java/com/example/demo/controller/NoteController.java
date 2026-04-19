@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -33,24 +34,26 @@ import jakarta.validation.Valid;
 public class NoteController {
 	@Autowired
 	NoteService noteService;
+	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
 	@GetMapping
 	@ResponseStatus(HttpStatus.OK)
 	Iterable<Order> getOrder() {
 		return noteService.getOrder();
 	}
+	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
 	@GetMapping("/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	Order getOrderById(@PathVariable Long id) {
 		return noteService.getOrderById(id).orElseThrow(()->new
 				ResponseStatusException(HttpStatus.NOT_FOUND));
 	}
-
+	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	void deleteOrderById(@PathVariable Long id) {
 		noteService.deleteOrderById(id);
 	}
-
+	@PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	Long createOrder(@RequestBody @Valid Order order) throws IOException {
